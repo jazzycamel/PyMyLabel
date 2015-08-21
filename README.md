@@ -13,7 +13,7 @@ The first step is run the following command:
 
     $ python configure.py
 
-This will use SIP to generate the necessary wrapper C/C++ wrapper code and will create Makefile's for the library itself and the wrapper.
+This will use SIP to generate the necessary C/C++ wrapper code and will create Makefile's for the library itself and the wrapper.
 
 Now you can build and install the library:
 
