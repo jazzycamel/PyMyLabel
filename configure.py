@@ -41,11 +41,39 @@ class TargetQtConfiguration(object):
         pipe.close()        
 
 if __name__=="__main__":
+    from argparse import ArgumentParser
+
+    parser=ArgumentParser(description="Configure PyMyLabel module.")
+    parser.add_argument(
+        '-q', '--qmake',
+        dest="qmake",
+        type=str,
+        default="qmake",
+        help="Path to qmake executable"
+    )
+    args=parser.parse_args()
+
+    qmake_exe=args.qmake
+    if not qmake_exe.endswith('qmake'):
+        qmake_exe=os.path.join(qmake_exe,'qmake')
+
+    if os.system(' '.join([qmake_exe, '-v']))!=0:
+        
+        if sys.platform=='win32':
+            print("Make sure you have a working Qt qmake on your PATH.")
+        else:
+            print(
+                "Use the --qmake argument to explicitly specify a "
+                "working Qt qmake."
+            )
+        exit(1)
+
     pyconfig=HostPythonConfiguration()
     py_sip_dir=os.path.join(pyconfig.data_dir, 'sip', 'PyQt5')
     sip_inc_dir=pyconfig.venv_inc_dir
 
-    qtconfig=TargetQtConfiguration("/Users/rob/Qt/5.4/clang_64/bin/qmake")
+    #qtconfig=TargetQtConfiguration("/Users/rob/Qt/5.4/clang_64/bin/qmake")
+    qtconfig=TargetQtConfiguration(qmake_exe)
 
     inc_dir="src"
     lib_dir="src"
@@ -118,5 +146,6 @@ if __name__=="__main__":
     ).generate()
 
     os.chdir("src")
-    os.system("/Users/rob/Qt/5.4/clang_64/bin/qmake")
+    #os.system("/Users/rob/Qt/5.4/clang_64/bin/qmake")
+    os.system(qmake_exe)
     sys.exit()
