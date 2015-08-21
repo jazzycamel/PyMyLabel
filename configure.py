@@ -72,7 +72,6 @@ if __name__=="__main__":
     py_sip_dir=os.path.join(pyconfig.data_dir, 'sip', 'PyQt5')
     sip_inc_dir=pyconfig.venv_inc_dir
 
-    #qtconfig=TargetQtConfiguration("/Users/rob/Qt/5.4/clang_64/bin/qmake")
     qtconfig=TargetQtConfiguration(qmake_exe)
 
     inc_dir="src"
@@ -146,6 +145,5 @@ if __name__=="__main__":
     ).generate()
 
     os.chdir("src")
-    #os.system("/Users/rob/Qt/5.4/clang_64/bin/qmake")
     os.system(qmake_exe)
     sys.exit()
