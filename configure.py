@@ -5,7 +5,7 @@ import os, sipconfig, sys
 class HostPythonConfiguration(object):
     def __init__(self):
         self.platform=sys.platform
-        self.version=sys.hexversion >> 8
+        self.version=sys.hexversion>>8
 
         self.inc_dir=sysconfig.get_python_inc()
         self.venv_inc_dir=sysconfig.get_python_inc(prefix=sys.prefix)
@@ -13,10 +13,10 @@ class HostPythonConfiguration(object):
 
         if sys.platform=='win32':
             self.data_dir=sys.prefix
-            self.lib_dir=sys.prefix + '\\libs'
+            self.lib_dir=sys.prefix+'\\libs'
         else:
-            self.data_dir=sys.prefix + '/share'
-            self.lib_dir=sys.prefix + '/lib'
+            self.data_dir=sys.prefix+'/share'
+            self.lib_dir=sys.prefix+'/lib'
 
 class TargetQtConfiguration(object):
     def __init__(self, qmake):
@@ -74,18 +74,17 @@ if __name__=="__main__":
 
     qtconfig=TargetQtConfiguration(qmake_exe)
 
-    inc_dir="src"
-    lib_dir="src"
+    inc_dir=os.path.abspath(os.path.join(".","src"))
+    lib_dir=inc_dir
     dest_pkg_dir="PyMyLabel"
-    sip_files_dir="sip"
-    output_dir = "modules"
+
+    sip_files_dir=os.path.abspath(os.path.join(".","sip"))
+    output_dir =os.path.abspath(os.path.join(".", "modules"))
     build_file="PyMyLabel.sbf"
     build_path = os.path.join(output_dir, build_file)
-
-    if not os.path.exists("modules"): os.mkdir("modules")       
+      
     if not os.path.exists(output_dir): os.mkdir(output_dir)
-
-    sip_file = os.path.join("sip", "PyMyLabel.sip")
+    sip_file = os.path.join(sip_files_dir, "PyMyLabel.sip")
 
     config=sipconfig.Configuration()    
     config.default_mod_dir=( "/usr/local/lib/python%i.%i/dist-packages" %
@@ -94,6 +93,10 @@ if __name__=="__main__":
     cmd=" ".join([
         config.sip_bin,
         pyqt_config['sip_flags'],
+        ###
+        '-I', 'C:\\Users\\Rob\\Downloads\\PyQt-gpl-5.4.2\\PyQt-gpl-5.4.2\\sip',
+        ###
+        '-I', sip_files_dir,
         '-I', py_sip_dir,
         '-I', config.sip_inc_dir,
         '-I', inc_dir,
@@ -114,29 +117,42 @@ if __name__=="__main__":
         install_dir=dest_pkg_dir
     )
 
-    makefile.extra_include_dirs+=[
-        os.path.abspath(inc_dir),
-        qtconfig.QT_INSTALL_HEADERS,
-        qtconfig.QT_INSTALL_LIBS+'/QtCore.framework/Headers',
-        qtconfig.QT_INSTALL_LIBS+'/QtGui.framework/Headers',
-        qtconfig.QT_INSTALL_LIBS+'/QtWidgets.framework/Headers',
-    ]
-    makefile.extra_defines+=['QT_CORE_LIB', 'QT_GUI_LIB', 'QT_WIDGETS_LIB']
-    makefile.extra_cxxflags+=['-F'+qtconfig.QT_INSTALL_LIBS]
-    makefile.extra_lib_dirs+=[os.path.abspath(lib_dir)]
+    makefile.extra_defines+=['MYLABEL_LIBRARY','QT_CORE_LIB', 'QT_GUI_LIB', 'QT_WIDGETS_LIB']
+    makefile.extra_include_dirs+=[os.path.abspath(inc_dir), qtconfig.QT_INSTALL_HEADERS]
+    makefile.extra_lib_dirs+=[qtconfig.QT_INSTALL_LIBS, os.path.join('..','src')]
     makefile.extra_libs+=['MyLabel']
-    makefile.extra_lflags+=[
-        '-L.',
-        "-L"+qtconfig.QT_INSTALL_LIBS,
-        '-F'+qtconfig.QT_INSTALL_LIBS,
-        "-framework QtWidgets",
-        "-framework QtGui",
-        "-framework QtCore",
-        "-framework DiskArbitration",
-        "-framework IOKit",
-        "-framework OpenGL",
-        "-framework AGL",
-    ]
+
+    if sys.platform=='darwin':
+        makefile.extra_cxxflags+=['-F'+qtconfig.QT_INSTALL_LIBS]        
+        makefile.extra_include_dirs+=[
+            os.path.join(qtconfig.QT_INSTALL_LIBS,'QtCore.framework','Headers'),
+            os.path.join(qtconfig.QT_INSTALL_LIBS,'/QtGui.framework','Headers'),
+            os.path.join(qtconfig.QT_INSTALL_LIBS,'/QtWidgets.framework','Headers'),
+        ]
+
+        makefile.extra_lflags+=[
+            #'-L.',
+            #'-L../src/release',
+            #"-L"+qtconfig.QT_INSTALL_LIBS,       
+            '-F'+qtconfig.QT_INSTALL_LIBS,
+            "-framework QtWidgets",
+            "-framework QtGui",
+            "-framework QtCore",
+            "-framework DiskArbitration",
+            "-framework IOKit",
+            "-framework OpenGL",
+            "-framework AGL",
+        ]
+
+    elif sys.platform=='win32':
+        makefile.extra_include_dirs+=[
+            os.path.join(qtconfig.QT_INSTALL_HEADERS, "QtCore"),
+            os.path.join(qtconfig.QT_INSTALL_HEADERS, "QtGui"),
+            os.path.join(qtconfig.QT_INSTALL_HEADERS, "QtWidgets"),
+        ]
+        makefile.extra_lib_dirs+=[os.path.join('..','src','release')]
+        makefile.extra_libs+=['Qt5Core','Qt5Gui','Qt5Widgets']
+
     makefile.generate()
 
     sipconfig.ParentMakefile(
@@ -144,6 +160,10 @@ if __name__=="__main__":
         subdirs = ["src", output_dir],
     ).generate()
 
-    os.chdir("src")
-    os.system(qmake_exe)
+    os.chdir("src")    
+    qmake_cmd=qmake_exe
+    if sys.platform=="win32": qmake_cmd+=" -spec win32-msvc2010"
+    print()
+    print(qmake_cmd)
+    os.system(qmake_cmd)
     sys.exit()
