@@ -51,6 +51,13 @@ if __name__=="__main__":
         default="qmake",
         help="Path to qmake executable"
     )
+    parser.add_argument(
+        '-s', '--sip-extras',
+        dest="sip_extras",
+        type=str,
+        default="",
+        help="Extra arguments to sip"
+    )
     args=parser.parse_args()
 
     qmake_exe=args.qmake
@@ -67,6 +74,8 @@ if __name__=="__main__":
                 "working Qt qmake."
             )
         exit(1)
+
+    sip_args=args.sip_extras
 
     pyconfig=HostPythonConfiguration()
     py_sip_dir=os.path.join(pyconfig.data_dir, 'sip', 'PyQt5')
@@ -93,9 +102,7 @@ if __name__=="__main__":
     cmd=" ".join([
         config.sip_bin,
         pyqt_config['sip_flags'],
-        ###
-        '-I', 'C:\\Users\\Rob\\Downloads\\PyQt-gpl-5.4.2\\PyQt-gpl-5.4.2\\sip',
-        ###
+        sip_args,
         '-I', sip_files_dir,
         '-I', py_sip_dir,
         '-I', config.sip_inc_dir,
@@ -126,14 +133,11 @@ if __name__=="__main__":
         makefile.extra_cxxflags+=['-F'+qtconfig.QT_INSTALL_LIBS]        
         makefile.extra_include_dirs+=[
             os.path.join(qtconfig.QT_INSTALL_LIBS,'QtCore.framework','Headers'),
-            os.path.join(qtconfig.QT_INSTALL_LIBS,'/QtGui.framework','Headers'),
-            os.path.join(qtconfig.QT_INSTALL_LIBS,'/QtWidgets.framework','Headers'),
+            os.path.join(qtconfig.QT_INSTALL_LIBS,'QtGui.framework','Headers'),
+            os.path.join(qtconfig.QT_INSTALL_LIBS,'QtWidgets.framework','Headers'),
         ]
 
-        makefile.extra_lflags+=[
-            #'-L.',
-            #'-L../src/release',
-            #"-L"+qtconfig.QT_INSTALL_LIBS,       
+        makefile.extra_lflags+=[      
             '-F'+qtconfig.QT_INSTALL_LIBS,
             "-framework QtWidgets",
             "-framework QtGui",
