@@ -2,11 +2,21 @@
 A minimal example of using SIP to create a Python wrapper for a C++ Qt5 library.
 
 ## Prerequisites
-This example was written and tested with the following configuration:
- - Python 3.4
- - Qt5.4
+This example was written and tested with the following configurations:
+
+### Mac OSX 10.10.4 Yosemite
+ - Python 3.4.3
+ - Qt 5.4
  - SIP 4.16.8
- - PyQt5.4.2
+ - PyQt 5.4.2
+ - clang-602.0.53
+
+### Windows 7 Pro SP1
+ - Python 3.4.2 (32bit)
+ - Qt 5.4
+ - PyQt 5.4.2 (installed from binary)
+ - SIP 4.16.8
+ - MSVC 2010
 
 ## Configuring and Compiling
 The first step is run the following command:
