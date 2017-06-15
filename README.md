@@ -18,6 +18,13 @@ This example was written and tested with the following configurations:
  - SIP 4.16.8
  - MSVC 2010
 
+### Ubuntu 16.04
+ - Python 3.5.2
+ - Qt 5.7
+ - PyQt 5.8.2
+ - SIP 4.19.2
+ - gcc 5.4.0
+
 ## Configuring and Compiling
 The first step is run the following command:
 
