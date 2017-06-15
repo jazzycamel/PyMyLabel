@@ -130,7 +130,7 @@ if __name__=="__main__":
     makefile.extra_libs+=['MyLabel']
 
     if sys.platform=='darwin':
-        makefile.extra_cxxflags+=['-F'+qtconfig.QT_INSTALL_LIBS]        
+        makefile.extra_cxxflags+=['-F'+qtconfig.QT_INSTALL_LIBS, '-std=c++11']
         makefile.extra_include_dirs+=[
             os.path.join(qtconfig.QT_INSTALL_LIBS,'QtCore.framework','Headers'),
             os.path.join(qtconfig.QT_INSTALL_LIBS,'QtGui.framework','Headers'),
