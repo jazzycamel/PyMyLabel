@@ -157,6 +157,14 @@ if __name__=="__main__":
         makefile.extra_lib_dirs+=[os.path.join('..','src','release')]
         makefile.extra_libs+=['Qt5Core','Qt5Gui','Qt5Widgets']
 
+    elif sys.platform=="linux":
+        makefile.extra_cxxflags+=['-std=c++11']
+        makefile.extra_include_dirs+=[
+            os.path.join(qtconfig.QT_INSTALL_HEADERS, "QtCore"),
+            os.path.join(qtconfig.QT_INSTALL_HEADERS, "QtGui"),
+            os.path.join(qtconfig.QT_INSTALL_HEADERS, "QtWidgets"),
+        ]
+
     makefile.generate()
 
     sipconfig.ParentMakefile(

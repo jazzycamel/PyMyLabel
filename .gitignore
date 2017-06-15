@@ -1,0 +1,7 @@
+*.so*
+*.py[co]
+*.o
+Makefile
+.qmake.stash
+modules/*
+src/moc_*.*

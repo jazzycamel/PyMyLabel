@@ -14,6 +14,10 @@ HEADERS += mylabel.h\
         mylabel_global.h
 
 unix {
+    mylabel.files=$PWD/src/libMyLabel.so*
+    mylabel.path = /usr/lib
+    INSTALLS += mylabel
+
     target.path = /usr/lib
     INSTALLS += target
 }
