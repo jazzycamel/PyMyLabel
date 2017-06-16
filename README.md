@@ -25,6 +25,12 @@ This example was written and tested with the following configurations:
  - SIP 4.19.2
  - gcc 5.4.0
 
+### Fedora 25 Workstation
+ - Python 3.5.3
+ - Qt 5.8
+ - SIP 4.19.2
+ - PyQt5.8.2
+
 ## Configuring and Compiling
 The first step is run the following command:
 
